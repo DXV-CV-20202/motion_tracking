@@ -25,8 +25,8 @@ if not capture.isOpened():
     print('Unable to open: ' + args.input)
     exit(0)
 
-disappear_threshold = 5
-num_keypoints = 8
+disappear_threshold = 10
+num_keypoints = 16
 
 extractor = SIFT()
 moving_objects = []
@@ -51,15 +51,19 @@ while True:
         if cv.contourArea(c) < 400:
             continue
         (x, y, w, h) = cv.boundingRect(c)
-        patch = frame[x:x+w, y:y+h, :]
+        patch = frame[y:y+h, x:x+w]
         if np.prod(patch.shape) <= 0:
             continue
         keypoints, descriptions = extractor.extract_full(patch)
         if type(descriptions) == type(None):
             continue
+        keypoint_description = list(zip(keypoints, descriptions))
+        keypoint_description.sort(key=lambda x:x[0].response, reverse=True)
+        keypoints = [kd[0] for kd in keypoint_description[:num_keypoints]]
+        descriptions = np.array([kd[1] for kd in keypoint_description[:num_keypoints]])
         color1 = (list(np.random.choice(range(256), size=3)))
         color =[int(color1[0]), int(color1[1]), int(color1[2])]
-        detected_objects.append(MovingObject(_id, (x, y, x + w, y + h), keypoints[:num_keypoints], descriptions[:num_keypoints], color))
+        detected_objects.append(MovingObject(_id, (x, y, x + w, y + h), keypoints, descriptions, color))
         _id += 1
         all_objects.add(detected_objects[-1])
 

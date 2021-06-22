@@ -211,3 +211,7 @@ cython_debug/
 # 3D Images
 *.3dm
 *.max
+
+# Video
+*.mp4
+*.webm
