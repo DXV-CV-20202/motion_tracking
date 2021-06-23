@@ -1,16 +1,7 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
+from feature_extractor import *
 
-def score_by_matching_keypoint(keypoints_1, keypoints_2, descriptions_1, descriptions_2):
-    m = len(keypoints_1)
-    n = len(keypoints_2)
-    cost = np.zeros((m, n))
-    for i in range(m):
-        for j in range(n):
-            cost[i, j] = keypoints_1[i].response * keypoints_2[j].response / (np.linalg.norm(descriptions_1[i] - descriptions_2[j]) + 0.0001)
-    row, col = linear_sum_assignment(cost_matrix=cost, maximize=True)
-    score = np.sum([cost[row[i], col[i]] for i in range(len(row))])
-    return score
 
 def iou(boxA, boxB):
     xA = max(boxA[0], boxB[0])
@@ -27,11 +18,14 @@ def iou(boxA, boxB):
 
     return score
 
-def match_object(list1, list2):
+def match_object(list1, list2, extractor):
     cost = np.zeros((len(list1), len(list2)))
     for i, k1 in enumerate(list1):
         for j, k2 in enumerate(list2):
-            cost[i, j] = score_by_matching_keypoint(k1.keypoints, k2.keypoints, k1.descriptions, k2.descriptions)
+            if isinstance(extractor, SIFT) == True:
+                cost[i, j] = extractor.score_by_matching_keypoint(k1.keypoints, k2.keypoints, k1.descriptions, k2.descriptions)
+            else:
+                cost[i, j] = 1.0 / extractor.score_by_correlation(k1.feature, k2.feature)
             cost[i, j] *= iou(k1.bbox, k2.bbox)
     row, col = linear_sum_assignment(cost_matrix=cost, maximize=True)
     matching = list(zip(row, col))
