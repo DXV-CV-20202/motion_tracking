@@ -14,7 +14,7 @@ class SIFT(FeatureExtractor):
         super().__init__(*arg, **kwargs)
         self.extractor = cv2.SIFT_create()
         self.eps = 1e-7
-        self.isRootSIFT = False
+        self.isRootSIFT = True
         self.size = 1024
 
     def extract(self, image, *args, **kwargs):
@@ -30,8 +30,10 @@ class SIFT(FeatureExtractor):
         return features[:1024]
 
     def extract_full(self, image, *args, **kwargs):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         kp, descriptor = self.extractor.detectAndCompute(image, None)
+        if type(descriptor) == type(None):
+            return kp, None
         if self.isRootSIFT == True:
             descriptor /= (descriptor.sum(axis=1, keepdims=True) + self.eps)
             descriptor = np.sqrt(descriptor)
