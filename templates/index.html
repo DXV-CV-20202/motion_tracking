@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <title>Project II - Object tracking</title>
+    <style>
+      img {
+        height: 100px;
+      }
+      .result-container {
+        height: 65vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
+      .img-container {
+        margin: 10px auto;
+        padding: 5px;
+        width: 100%;
+        background-color: rgb(233, 233, 233);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .img-container img {
+        width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row text-center my-5 py-4 bg-gradient bg-info">
+      <h5>Computer Vision - Project II</h5>
+      <h1>Object tracking</h1>
+    </div>
+    {% if error %}
+    <div class="container">
+      <div class="alert alert-danger">{{ error }}</div>
+    </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-lg-4 text-center col-sm-12">
+        <div class="img-container">
+          <img src="{{ url_for('video_feed', frame_type='original') }}" />
+          <h5 class="text-secondary mt-3">Original Feed</h5>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center col-sm-12">
+        <div class="img-container">
+          <img src="{{ url_for('video_feed', frame_type='frame') }}" />
+          <h5 class="text-secondary mt-3">Tracked Feed</h5>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center col-sm-12">
+        <div class="img-container">
+          <img src="{{ url_for('video_feed', frame_type='canny') }}" />
+          <h5 class="text-secondary mt-3">Canny</h5>
+        </div>
+      </div>
+      <!-- <div class="col-lg-4 text-center col-sm-12">
+        <div class="img-container">
+          <img src="{{ url_for('video_feed', frame_type='thresh') }}" />
+          <h5 class="text-secondary mt-3">Thresh</h5>
+        </div>
+      </div> -->
+    </div>
+  </body>
+</html>
