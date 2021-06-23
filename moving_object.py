@@ -2,9 +2,10 @@ from collections import namedtuple
 from filter import KalmanTracking
 
 class MovingObject:
-    def __init__(self, _id, bbox, keypoints, descriptions, color):
+    def __init__(self, _id, bbox, feature, keypoints, descriptions, color):
         self._id = _id
         self.bbox = bbox
+        self.feature = feature
         self.keypoints = keypoints
         self.descriptions = descriptions
         self.tracking = [bbox]
