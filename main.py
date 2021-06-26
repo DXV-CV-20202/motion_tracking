@@ -16,8 +16,8 @@ parser.add_argument('--input', type=str, help='Path to a video or a sequence of 
 parser.add_argument('--algo', type=str, help='Background subtraction method (KNN, MOG2).', default='MOG2')
 parser.add_argument('--disappear_threshold', type=int, help='', default=10)
 parser.add_argument('--num_keypoints', type=int, help='', default=16)
-parser.add_argument('--extractor_name', type=str, help='', default='SIFT')
-parser.add_argument('--contour_area', type=int, help='', default=800)
+parser.add_argument('--extractor_name', type=str, help='', default='ColorHistogram')
+parser.add_argument('--contour_area', type=int, help='', default=850)
 args = parser.parse_args()
 
 disappear_threshold = args.disappear_threshold
@@ -49,7 +49,9 @@ class MotionTracking:
         blur = cv.GaussianBlur(frame, (5, 5), 0)
         fgMask = self.backSub.apply(blur)
         median = cv.medianBlur(fgMask, 5)
-        _, thresh = cv.threshold(median, 220, 255, cv.THRESH_BINARY)
+        kernel = np.ones((5, 5), np.uint8)
+        closing = cv.morphologyEx(median, cv.MORPH_CLOSE, kernel)
+        _, thresh = cv.threshold(closing, 220, 255, cv.THRESH_BINARY)
         canny = cv.Canny(thresh, 150, 200)
         contour, _ = cv.findContours(deepcopy(thresh), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
@@ -150,7 +152,7 @@ class MotionTracking:
         for res in self.track(input=input):
             frame, canny, thresh = res
             cv.imshow('Frame', frame)
-            cv.imshow('FG Mask', canny)
+            #cv.imshow('FG Mask', canny)
             cv.imshow('thresh', thresh)
 
             keyboard = cv.waitKey(30)
