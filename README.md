@@ -11,4 +11,5 @@
     + --num_keypoints: number of SIFT keypoints for object matching
     + --extractor_name: matching algorithm ("SIFT" or "ColorHistogram")
     + --contour_area: minimize area of contour that correspond to an object
+- Or just `python main.py` to run with default parameters
 - Running `python app.py` with similar parameters to open Web UI (unstable).
